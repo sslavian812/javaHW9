@@ -25,6 +25,20 @@ public class PersonImpl implements Person {
         accounts = new ConcurrentHashMap<String, Account>();
     }
 
+    public PersonImpl(Person p) {
+        try {
+            // actually no exception can be thrown
+            this.name = p.getName();
+            this.surname = p.getSurname();
+            this.passNum = p.getPassNum();
+        } catch (Exception e) {
+            this.name    = "";
+            this.surname = "";
+            this.passNum = "";
+        }
+        accounts = new ConcurrentHashMap<String, Account>();
+    }
+
     public String getName() throws Exception {
         return name;
     }

@@ -7,7 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Created by viacheslav on 08.05.14.
  */
-public interface Person extends Remote, Serializable {
+public interface Person {
 
     /**
      * У физического лица (Person) можно запросить имя.

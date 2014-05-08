@@ -20,7 +20,7 @@ public interface Bank extends Remote {
      * @return
      * @throws RemoteException
      */
-    public Person getPerson(String name, String surname, String passNum, int type) throws RemoteException;
+    public Person getPerson(String name, String surname, String passNum, String type) throws RemoteException;
 
 //    /**
 //     * Должна быть возможность создания записи о физическом лице по его данным.

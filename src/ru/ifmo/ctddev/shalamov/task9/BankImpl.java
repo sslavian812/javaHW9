@@ -1,9 +1,11 @@
 package ru.ifmo.ctddev.shalamov.task9;
 
-import java.rmi.Remote;
+import java.rmi.AlreadyBoundException;
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -28,12 +30,38 @@ public class BankImpl implements Bank {
      * @throws RemoteException
      */
     @Override
-    public Person getPerson(String name, String surname, String passNum, int type) throws RemoteException {
+    public Person getPerson(String name, String surname, String passNum, String type) throws RemoteException {
         String uid = name + "_" + surname + "_" + passNum;
+
+        if (!("remote".equals(type) || "serialisation".equals(type))) {
+            return null;
+        }
+
         if (!persons.containsKey(uid)) {
             persons.put(uid, new PersonImpl(name, surname, passNum));
         }
-        return persons.get(uid);
+
+        if ("serialisation".equals(type)) {
+            return new LocalPersonImpl(persons.get(uid));
+        }
+        if ("remote".equals(type)) {
+            RemotePerson person = new RemotePersonImpl(persons.get(uid));
+            try {
+                RemotePerson stub = (RemotePerson) UnicastRemoteObject.exportObject(person, 0);
+                Registry registry = LocateRegistry.createRegistry(0);
+                registry.bind(uid, stub);
+                return (Person) registry.lookup(uid);
+            } catch (RemoteException e) {
+                System.out.println(e.getMessage());
+                System.exit(1);
+            } catch (AlreadyBoundException e) {
+                e.printStackTrace();
+            } catch (NotBoundException e) {
+                System.out.println("not bound");
+                System.exit(1);
+            }
+        }
+        return null;
     }
 
 //    /**
@@ -51,4 +79,21 @@ public class BankImpl implements Bank {
 //        persons.put(uid, new Person(name, surname, passNum));
 //        return persons.get(uid);
 //    }
+
+    public static void main(String[] args) {
+        Bank bank = new BankImpl();
+        try {
+            Bank stub = (Bank) UnicastRemoteObject.exportObject(bank, 8080);
+            Registry registry = LocateRegistry.createRegistry(8080);
+            registry.bind("Bank", stub);
+        } catch (RemoteException e) {
+            System.out.println(e.getMessage());
+            System.exit(1);
+        } catch (AlreadyBoundException e) {
+            e.printStackTrace();
+        }
+
+        //while (true) ;
+        //-Djava.security.policy=/policy.all
+    }
 }
