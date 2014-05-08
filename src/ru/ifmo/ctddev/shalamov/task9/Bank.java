@@ -7,7 +7,7 @@ import java.rmi.RemoteException;
 /**
  * Created by viacheslav on 07.05.14.
  */
-public interface Bank extends Remote, Serializable {
+public interface Bank extends Remote {
 
     /**
      * Должна быть возможность создания записи о физическом лице по его данным.

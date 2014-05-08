@@ -11,7 +11,7 @@ import java.rmi.server.UnicastRemoteObject;
  */
 public class Server {
     /**
-     * Creates a Bank at rmi://localhost/bank.
+     * Creates a Bank at rmi://localhost:8080.
      */
     public static void main(String[] args) {
         Bank bank = new BankImpl();
@@ -25,8 +25,6 @@ public class Server {
         } catch (AlreadyBoundException e) {
             e.printStackTrace();
         }
-
-       // while (true) ;
     }
 }
 //-Djava.security.policy=/policy.all
