@@ -10,8 +10,6 @@ import java.rmi.RemoteException;
  */
 public interface Account extends Remote, Serializable {
     public String getId() throws RemoteException;
-
     public int getAmount() throws RemoteException;
-
     public void setAmount(int amount) throws RemoteException;
 }

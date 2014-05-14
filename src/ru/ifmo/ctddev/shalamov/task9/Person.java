@@ -42,4 +42,6 @@ public interface Person {
      * @throws Exception
      */
     public Account getAccount(String accountId) throws Exception;
+
+    public int setToAccount(String accountId, int amount) throws Exception;
 }

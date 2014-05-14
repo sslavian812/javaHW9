@@ -23,6 +23,13 @@ public interface Bank extends Remote {
     public Person getPerson(String name, String surname, String passNum, String type) throws RemoteException;
 
 //    /**
+//     * updates the information about this person in persons
+//     * @param p a person to be updated.
+//     * @return
+//     */
+//    public String commitPerson(Person p) throws RemoteException;
+
+//    /**
 //     * Должна быть возможность создания записи о физическом лице по его данным.
 //     * @param name
 //     * @param surname

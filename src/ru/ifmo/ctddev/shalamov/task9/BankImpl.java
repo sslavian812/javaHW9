@@ -12,10 +12,17 @@ import java.util.concurrent.ConcurrentHashMap;
  * Created by viacheslav on 07.05.14.
  */
 public class BankImpl implements Bank {
-    private ConcurrentHashMap<String, Person> persons;
+    private ConcurrentHashMap<String, RemotePerson> persons;
+    private static Registry registry = null;
 
     public BankImpl() {
-        persons = new ConcurrentHashMap<String, Person>();
+        persons = new ConcurrentHashMap<String, RemotePerson>();
+        try {
+            registry = LocateRegistry.createRegistry(0);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            System.exit(2);
+        }
     }
 
     /**
@@ -38,19 +45,26 @@ public class BankImpl implements Bank {
         }
 
         if (!persons.containsKey(uid)) {
-            persons.put(uid, new PersonImpl(name, surname, passNum));
+            persons.put(uid, new RemotePersonImpl(name, surname, passNum));
         }
 
         if ("serialisation".equals(type)) {
             return new LocalPersonImpl(persons.get(uid));
         }
         if ("remote".equals(type)) {
-            RemotePerson person = new RemotePersonImpl(persons.get(uid));
+            RemotePerson person = persons.get(uid);
+
             try {
-                RemotePerson stub = (RemotePerson) UnicastRemoteObject.exportObject(person, 0);
-                Registry registry = LocateRegistry.createRegistry(0);
-                registry.bind(uid, stub);
-                return (Person) registry.lookup(uid);
+                if (registry == null)
+                    registry = LocateRegistry.createRegistry(0);
+                try {
+                    return (Person) registry.lookup(uid);
+                } catch (NotBoundException e) {
+                    RemotePerson stub = (RemotePerson) UnicastRemoteObject.exportObject(person, 0);
+                    registry.bind(uid, stub);
+                    return (Person) registry.lookup(uid);
+                }
+
             } catch (RemoteException e) {
                 System.out.println(e.getMessage());
                 System.exit(1);
@@ -63,6 +77,21 @@ public class BankImpl implements Bank {
         }
         return null;
     }
+
+//    @Override
+//    public String commitPerson(Person p) throws RemoteException {
+//        try {
+//            String uid = p.getName() + "_" + p.getSurname() + "_" + p.getPassNum();
+//
+//            if (p == null || !persons.containsKey(uid)) {
+//                return null;
+//            }
+//            persons.put(uid, new RemotePersonImpl(p));
+//            return uid;
+//        } catch (Exception e) {
+//            return null;
+//        }
+//    }
 
 //    /**
 //     * Должна быть возможность создания записи о физическом лице по его данным.
@@ -79,6 +108,7 @@ public class BankImpl implements Bank {
 //        persons.put(uid, new Person(name, surname, passNum));
 //        return persons.get(uid);
 //    }
+
 
     public static void main(String[] args) {
         Bank bank = new BankImpl();

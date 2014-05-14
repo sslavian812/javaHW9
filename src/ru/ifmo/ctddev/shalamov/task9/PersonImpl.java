@@ -58,4 +58,12 @@ public class PersonImpl implements Person {
         }
         return accounts.get(accountId);
     }
+
+
+    public int setToAccount(String accountId, int amount) throws Exception {
+        Account acc = this.getAccount(accountId);
+        acc.setAmount(amount);
+        accounts.put(accountId, acc);
+        return acc.getAmount();
+    }
 }
