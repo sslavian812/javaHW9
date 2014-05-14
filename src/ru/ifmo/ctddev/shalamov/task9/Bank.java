@@ -10,33 +10,22 @@ import java.rmi.RemoteException;
 public interface Bank extends Remote {
 
     /**
-     * Должна быть возможность создания записи о физическом лице по его данным.
+     * Provides a RemotePerson or LocalPerson corresponding to type argument.
+     * <p/>
      * Должна быть возможность поиска физического лица по номеру паспорта, с выбором типа возвращаемого лица.
      *
-     * @param name
-     * @param surname
-     * @param passNum
-     * @param type
-     * @return
-     * @throws RemoteException
+     * @param passNum passNum of person
+     * @param type    which type should be provided. can be "remote" or "serialisation"
+     * @return requested Person object
+     * @throws RemoteException if something fails
      */
-    public Person getPerson(String name, String surname, String passNum, String type) throws RemoteException;
+    public Person getPerson(String passNum, String type) throws RemoteException;
 
-//    /**
-//     * updates the information about this person in persons
-//     * @param p a person to be updated.
-//     * @return
-//     */
-//    public String commitPerson(Person p) throws RemoteException;
 
-//    /**
-//     * Должна быть возможность создания записи о физическом лице по его данным.
-//     * @param name
-//     * @param surname
-//     * @param passNum
-//     * @param type
-//     * @return
-//     * @throws RemoteException
-//     */
-//    public Person createPerson(String name, String surname, String passNum, int type) throws RemoteException;
+    /**
+     * Должна быть возможность создания записи о физическом лице по его данным.
+     *
+     * @return true if thr person is successfully created, false - otherwise.
+     */
+    public boolean createPerson(String name, String surname, String passNum) throws RemoteException;
 }

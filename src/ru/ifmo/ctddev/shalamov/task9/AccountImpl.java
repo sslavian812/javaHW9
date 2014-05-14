@@ -9,26 +9,34 @@ public class AccountImpl implements Account {
     private String id;
     private int amount;
 
+    /**
+     * No default constructor available.
+     */
     private AccountImpl() {
     }
 
+    /**
+     * Creates an account with specified Id and zero-amount.
+     *
+     * @param id specified Id
+     */
     public AccountImpl(String id) {
         this.id = id;
         this.amount = 0;
     }
 
     @Override
-    public String getId() throws RemoteException {
+    public String getId() {
         return id;
     }
 
     @Override
-    public int getAmount() throws RemoteException {
+    public int getAmount() {
         return amount;
     }
 
     @Override
-    public void setAmount(int amount) throws RemoteException {
+    public void setAmount(int amount) {
         this.amount = amount;
     }
 }
